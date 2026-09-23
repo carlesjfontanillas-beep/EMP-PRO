@@ -4,12 +4,17 @@
   <meta charset="utf-8">
 
   <meta name="viewport"
-        content="width=device-width,initial-scale=1,viewport-fit=cover">
+        content="width=device-width,
+                 initial-scale=1,
+                 maximum-scale=1,
+                 user-scalable=no,
+                 viewport-fit=cover">
 
   <meta name="theme-color" content="#061d35">
 
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="EMP PRO">
 
   <title>EMP PRO</title>
@@ -22,96 +27,46 @@
         href="./icon-192.png">
 
   <link rel="apple-touch-icon"
-        sizes="192x192"
         href="./icon-192.png">
 
   <style>
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       width: 100%;
-      min-height: 100%;
+      height: 100%;
+      overflow: hidden;
       background: #061d35;
-      color: white;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
     }
 
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    main {
+    #emp-pro {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      box-sizing: border-box;
-      padding: 32px 24px;
-      text-align: center;
-    }
+      height: 100%;
+      width: 100vw;
+      height: 100dvh;
 
-    .icona {
-      width: 150px;
-      height: 150px;
+      margin: 0;
+      padding: 0;
+
+      border: 0;
       display: block;
-      margin: 0 auto 24px;
-      border-radius: 32px;
-    }
 
-    h1 {
-      margin: 0 0 12px;
-      font-size: 30px;
-    }
-
-    p {
-      margin: 0 auto 30px;
-      max-width: 360px;
-      opacity: .8;
-      line-height: 1.5;
-    }
-
-    .entrar {
-      display: inline-block;
-      background: white;
-      color: #061d35;
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: 750;
-      padding: 16px 28px;
-      border-radius: 16px;
+      background: #061d35;
     }
   </style>
 </head>
 
 <body>
 
-  <main>
-
-    <img
-      class="icona"
-      src="./icon-512.png"
-      alt="EMP PRO"
-    >
-
-    <h1>EMP PRO</h1>
-
-    <p>
-      Els meus partits
-    </p>
-
-    <a
-      class="entrar"
-      href="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
-    >
-      Entrar
-    </a>
-
-  </main>
+  <iframe
+    id="emp-pro"
+    src="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
+    allow="fullscreen"
+  ></iframe>
 
 </body>
 </html>
