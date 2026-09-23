@@ -2,6 +2,7 @@
 <html lang="ca">
 <head>
   <meta charset="utf-8">
+
   <meta name="viewport"
         content="width=device-width,initial-scale=1,viewport-fit=cover">
 
@@ -9,91 +10,106 @@
 
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Els meus partits">
+  <meta name="apple-mobile-web-app-title" content="EMP PRO">
 
-  <title>Els meus partits</title>
+  <title>EMP PRO</title>
 
   <link rel="manifest" href="./manifest.webmanifest">
+
   <link rel="icon"
         type="image/png"
         sizes="192x192"
         href="./icon-192.png">
 
-  <script>
-    const EMP_URL =
-      'https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec';
+  <link rel="apple-touch-icon"
+        sizes="192x192"
+        href="./icon-192.png">
 
-    const instalada =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true;
-
-    // Només entra automàticament a EMP PRO
-    // quan s'obre des de la icona de l'iPhone.
-    if (instalada) {
-      window.location.replace(EMP_URL);
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #061d35;
+      color: white;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
-  </script>
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    main {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .icona {
+      width: 150px;
+      height: 150px;
+      display: block;
+      margin: 0 auto 24px;
+      border-radius: 32px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 30px;
+    }
+
+    p {
+      margin: 0 auto 30px;
+      max-width: 360px;
+      opacity: .8;
+      line-height: 1.5;
+    }
+
+    .entrar {
+      display: inline-block;
+      background: white;
+      color: #061d35;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 750;
+      padding: 16px 28px;
+      border-radius: 16px;
+    }
+  </style>
 </head>
 
-<body style="
-  margin:0;
-  background:#061d35;
-  color:white;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-">
+<body>
 
-  <main style="
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:30px;
-    box-sizing:border-box;
-    text-align:center;
-  ">
+  <main>
 
-    <div>
+    <img
+      class="icona"
+      src="./icon-512.png"
+      alt="EMP PRO"
+    >
 
-      <img
-        src="./icon-512.png"
-        alt="Els meus partits"
-        style="
-          width:150px;
-          height:150px;
-          border-radius:32px;
-          margin-bottom:24px;
-        "
-      >
+    <h1>EMP PRO</h1>
 
-      <h1 style="margin:0 0 12px;">
-        Els meus partits
-      </h1>
+    <p>
+      Els meus partits
+    </p>
 
-      <p style="
-        margin:0 0 28px;
-        opacity:.8;
-        line-height:1.5;
-      ">
-        Afegeix aquesta aplicació a la pantalla d'inici
-        del teu iPhone.
-      </p>
-
-      <a
-        href="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
-        style="
-          display:inline-block;
-          background:white;
-          color:#061d35;
-          text-decoration:none;
-          font-weight:700;
-          padding:15px 25px;
-          border-radius:14px;
-        "
-      >
-        Obrir Els meus partits
-      </a>
-
-    </div>
+    <a
+      class="entrar"
+      href="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
+    >
+      Entrar
+    </a>
 
   </main>
 
