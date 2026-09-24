@@ -1,59 +1,34 @@
 <!doctype html>
 <html lang="ca">
 <head>
-  <meta charset="utf-8"> 
-
+  <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width,
                  initial-scale=1,
                  maximum-scale=1,
                  user-scalable=no,
                  viewport-fit=cover">
-
   <meta name="theme-color" content="#061d35">
-
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="EMP PRO">
-
   <title>EMP PRO</title>
 
   <link rel="manifest" href="./manifest.webmanifest">
-
-  <link rel="icon"
-        type="image/png"
-        sizes="192x192"
-        href="./icon-192.png">
-
-  <link rel="apple-touch-icon"
-        href="./icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
 
   <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #061d35;
+    html,body{
+      margin:0;padding:0;width:100%;height:100%;
+      overflow:hidden;background:#061d35;
     }
-
-    #emp-pro {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      margin: 0;
-      padding: 0;
-      display: block;
-      background: #061d35;
+    #emp-pro{
+      position:fixed;inset:0;width:100%;height:100%;
+      border:0;margin:0;padding:0;display:block;background:#061d35;
     }
   </style>
 </head>
-
 <body>
 
   <iframe
@@ -62,6 +37,72 @@
     allow="fullscreen"
     scrolling="yes">
   </iframe>
+
+  <script>
+  (function(){
+    'use strict';
+
+    var CLAU='EMP_PRO_ID_USUARI';
+    var frame=document.getElementById('emp-pro');
+
+    function idValid(id){
+      return /^USR_[A-Za-z0-9_-]+$/.test(String(id||'').trim());
+    }
+
+    function llegirId(){
+      try{
+        var id=String(localStorage.getItem(CLAU)||'').trim();
+        return idValid(id) ? id : '';
+      }catch(e){
+        return '';
+      }
+    }
+
+    function guardarId(id){
+      id=String(id||'').trim();
+      if(!idValid(id)) return false;
+      try{
+        localStorage.setItem(CLAU,id);
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    function enviarId(){
+      var id=llegirId();
+      if(!id || !frame || !frame.contentWindow) return;
+      try{
+        frame.contentWindow.postMessage({
+          tipus:'EMP_USR_ID',
+          idUsuari:id
+        },'*');
+      }catch(e){}
+    }
+
+    window.addEventListener('message',function(e){
+      if(!frame || e.source!==frame.contentWindow) return;
+
+      var d=e.data||{};
+
+      if(d.tipus==='EMP_USR_SET_ID' && idValid(d.idUsuari)){
+        guardarId(d.idUsuari);
+        enviarId();
+        return;
+      }
+
+      if(d.tipus==='EMP_USR_GET_ID'){
+        enviarId();
+      }
+    });
+
+    frame.addEventListener('load',function(){
+      enviarId();
+      setTimeout(enviarId,250);
+      setTimeout(enviarId,1000);
+    });
+  })();
+  </script>
 
 </body>
 </html>
