@@ -27,27 +27,9 @@
       position:fixed;inset:0;width:100%;height:100%;
       border:0;margin:0;padding:0;display:block;background:#061d35;
     }
-
-    #emp-diag{
-      position:fixed;
-      left:8px;
-      bottom:8px;
-      z-index:999999;
-      max-width:calc(100% - 16px);
-      box-sizing:border-box;
-      padding:7px 10px;
-      border-radius:9px;
-      background:rgba(0,0,0,.82);
-      color:#fff;
-      font:12px/1.25 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      white-space:normal;
-      pointer-events:none;
-    }
   </style>
 </head>
 <body>
-
-  <div id="emp-diag">DIAG: iniciant…</div>
 
   <iframe
     id="emp-pro"
@@ -61,76 +43,99 @@
     'use strict';
 
     var CLAU='EMP_PRO_ID_USUARI';
-    var COOKIE='EMP_PRO_ID_USUARI';
+    var EXEC='https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec';
     var frame=document.getElementById('emp-pro');
-    var diag=document.getElementById('emp-diag');
-
-    function mostrarDiag(text){
-      if(diag) diag.textContent='DIAG GitHub: '+text;
-    }
-
 
     function idValid(id){
       return /^USR_[A-Za-z0-9_-]+$/.test(String(id||'').trim());
     }
 
-    function llegirId(){
-      var id='';
-
+    function idDeUrl(){
       try{
-        id=String(localStorage.getItem(CLAU)||'').trim();
-        if(idValid(id)){ mostrarDiag('ID = '+id+' (localStorage)'); return id; }
+        var q=new URLSearchParams(window.location.search||'');
+        var id=String(q.get('emp_uid')||'').trim();
+        return idValid(id) ? id : '';
+      }catch(e){
+        return '';
+      }
+    }
+
+    function idDeLocal(){
+      try{
+        var id=String(localStorage.getItem(CLAU)||'').trim();
+        if(idValid(id)) return id;
       }catch(e){}
 
       try{
         var parts=(document.cookie||'').split(';');
         for(var i=0;i<parts.length;i++){
           var p=parts[i].trim();
-          if(p.indexOf(COOKIE+'=')===0){
-            id=decodeURIComponent(p.substring(COOKIE.length+1));
-            if(idValid(id)){ mostrarDiag('ID = '+id+' (cookie)'); return id; }
+          if(p.indexOf(CLAU+'=')===0){
+            var id=decodeURIComponent(p.substring(CLAU.length+1));
+            if(idValid(id)) return id;
           }
         }
       }catch(e){}
 
-      mostrarDiag('ID = CAP');
       return '';
+    }
+
+    function escriureUrl(id){
+      if(!idValid(id)) return;
+      try{
+        var u=new URL(window.location.href);
+        u.searchParams.set('emp_uid',id);
+        history.replaceState(null,'',u.pathname+u.search+u.hash);
+      }catch(e){}
     }
 
     function guardarId(id){
       id=String(id||'').trim();
-      if(!idValid(id)) return false;
+      if(!idValid(id)) return;
 
-      var ok=false;
-
-      try{
-        localStorage.setItem(CLAU,id);
-        ok=(localStorage.getItem(CLAU)===id);
-      }catch(e){}
+      try{ localStorage.setItem(CLAU,id); }catch(e){}
 
       try{
         document.cookie=
-          COOKIE+'='+encodeURIComponent(id)+
+          CLAU+'='+encodeURIComponent(id)+
           '; Max-Age=31536000; Path=/; SameSite=Lax';
       }catch(e){}
 
-      var finalOk=ok || llegirId()===id;
-      mostrarDiag(finalOk ? 'GUARDAT '+id : 'ERROR guardant '+id);
-      return finalOk;
+      /*
+       * Tercer canal: l'ID queda també a la URL de la PWA.
+       */
+      escriureUrl(id);
     }
 
-    function enviarId(){
-      var id=llegirId();
-      if(!id || !frame || !frame.contentWindow) return;
+    function urlIframe(id){
+      return idValid(id)
+        ? EXEC+'?emp_uid='+encodeURIComponent(id)
+        : EXEC;
+    }
+
+    function enviarId(id){
+      id=String(id||'').trim();
+      if(!idValid(id) || !frame || !frame.contentWindow) return;
+
       try{
-        mostrarDiag('ENVIANT '+id+' a Apps Script');
         frame.contentWindow.postMessage({
           tipus:'EMP_USR_ID',
           idUsuari:id
         },'*');
-      }catch(e){
-        mostrarDiag('ERROR enviant ID');
-      }
+      }catch(e){}
+    }
+
+    /*
+     * ARRANCADA:
+     * 1 URL de la PWA
+     * 2 localStorage/cookie
+     * 3 anònim
+     */
+    var idInicial=idDeUrl() || idDeLocal();
+
+    if(idInicial){
+      guardarId(idInicial);
+      frame.src=urlIframe(idInicial);
     }
 
     window.addEventListener('message',function(e){
@@ -139,36 +144,30 @@
       var d=e.data||{};
 
       if(d.tipus==='EMP_USR_SET_ID' && idValid(d.idUsuari)){
-        /*
-         * V13: guardem l'ID però NO el reenviem immediatament.
-         * Durant registre -> favorits, l'eco provocava una segona
-         * validació concurrent que interferia amb carregarCataleg().
-         */
         guardarId(d.idUsuari);
-        mostrarDiag('REBUT i GUARDAT '+d.idUsuari);
         return;
       }
 
       if(d.tipus==='EMP_USR_GET_ID'){
-        enviarId();
+        var id=idDeUrl() || idDeLocal();
+        if(id) enviarId(id);
       }
     });
 
-    var idInicial=llegirId();
-    mostrarDiag(idInicial ? 'INICI ID = '+idInicial : 'INICI ID = CAP');
-
-        frame.addEventListener('load',function(){
-      enviarId();
-      setTimeout(enviarId,250);
-      setTimeout(enviarId,1000);
+    frame.addEventListener('load',function(){
+      var id=idDeUrl() || idDeLocal();
+      if(id) enviarId(id);
     });
 
     window.addEventListener('pageshow',function(){
-      enviarId();
+      var id=idDeUrl() || idDeLocal();
+      if(id) enviarId(id);
     });
 
     document.addEventListener('visibilitychange',function(){
-      if(!document.hidden) enviarId();
+      if(document.hidden) return;
+      var id=idDeUrl() || idDeLocal();
+      if(id) enviarId(id);
     });
   })();
   </script>
