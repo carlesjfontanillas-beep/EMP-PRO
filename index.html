@@ -2,69 +2,68 @@
 <html lang="ca">
 <head>
   <meta charset="utf-8">
-
-  <meta name="viewport"
-        content="width=device-width,
-                 initial-scale=1,
-                 maximum-scale=1,
-                 user-scalable=no,
-                 viewport-fit=cover">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#061d35">
-
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="EMP PRO">
-
   <title>EMP PRO</title>
-
   <link rel="manifest" href="./manifest.webmanifest">
-
-  <link rel="icon"
-        type="image/png"
-        sizes="192x192"
-        href="./icon-192.png">
-
-  <link rel="apple-touch-icon"
-        href="./icon-192.png">
-
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #061d35;
-    }
-
-   #emp-pro {
-  position: fixed;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  border: 0;
-  margin: 0;
-  padding: 0;
-
-  display: block;
-  background: #061d35;
-}
+    html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#061d35}
+    #emp-pro{position:fixed;inset:0;width:100%;height:100%;border:0;margin:0;padding:0;display:block;background:#061d35}
   </style>
 </head>
-
 <body>
+  <iframe id="emp-pro"
+    src="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
+    allow="fullscreen" scrolling="yes"></iframe>
 
- <iframe
-  id="emp-pro"
-  src="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
-  allow="fullscreen"
-  scrolling="yes"
-></iframe>
+  <script>
+  (function(){
+    'use strict';
+    var CLAU='EMP_PRO_ID_USUARI';
+    var frame=document.getElementById('emp-pro');
 
+    function llegir(){
+      try{return localStorage.getItem(CLAU)||'';}catch(e){return '';}
+    }
+    function guardar(id){
+      id=String(id||'').trim();
+      if(!id)return;
+      try{localStorage.setItem(CLAU,id);}catch(e){}
+    }
+    function respondre(){
+      if(!frame||!frame.contentWindow)return;
+      frame.contentWindow.postMessage({
+        tipus:'EMP_USR_ID_RESPONSE',
+        idUsuari:llegir()
+      },'*');
+    }
+
+    window.addEventListener('message',function(event){
+      var d=event.data||{};
+      if(!d||typeof d!=='object')return;
+
+      if(d.tipus==='EMP_USR_GET_ID'){
+        respondre();
+        return;
+      }
+
+      if(d.tipus==='EMP_USR_SET_ID'){
+        guardar(d.idUsuari);
+        respondre();
+      }
+    });
+
+    frame.addEventListener('load',function(){
+      setTimeout(respondre,100);
+      setTimeout(respondre,500);
+      setTimeout(respondre,1200);
+    });
+  })();
+  </script>
 </body>
 </html>
