@@ -31,134 +31,37 @@
 
   <style>
     html,
-    body{
-      margin:0;
-      padding:0;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      background:#061d35;
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #061d35;
     }
 
-    #emp-pro{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      border:0;
-      margin:0;
-      padding:0;
-      display:block;
-      background:#061d35;
+    #emp-pro {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      display: block;
+      background: #061d35;
     }
   </style>
 </head>
 
 <body>
 
-<script>
-(function(){
-  'use strict';
-
-  var CLAU='EMP_PRO_ID_USUARI';
-
-  var URL_APP=
-    'https://script.google.com/macros/s/' +
-    'AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2' +
-    '/exec';
-
-  function llegirId(){
-    try{
-      return String(
-        localStorage.getItem(CLAU) || ''
-      ).trim();
-    }catch(e){
-      return '';
-    }
-  }
-
-  function guardarId(id){
-    id=String(id || '').trim();
-
-    if(!/^USR_[A-Za-z0-9_-]+$/.test(id)){
-      return;
-    }
-
-    try{
-      localStorage.setItem(
-        CLAU,
-        id
-      );
-    }catch(e){}
-  }
-
-  function crearIframe(){
-
-    var id=llegirId();
-    var src=URL_APP;
-
-    /*
-     * Si GitHub ja coneix l'usuari, Apps Script rep
-     * l'ID des del primer instant de càrrega.
-     */
-    if(id){
-      src +=
-        '?emp_uid=' +
-        encodeURIComponent(id);
-    }
-
-    var frame=
-      document.createElement('iframe');
-
-    frame.id='emp-pro';
-    frame.src=src;
-    frame.setAttribute(
-      'allow',
-      'fullscreen'
-    );
-    frame.setAttribute(
-      'scrolling',
-      'yes'
-    );
-
-    document.body.appendChild(frame);
-  }
-
-  /*
-   * Apps Script només necessita postMessage per
-   * GUARDAR l'ID després del primer registre.
-   */
-  window.addEventListener(
-    'message',
-    function(event){
-
-      var d=event.data || '';
-
-      if(
-        !d ||
-        typeof d!=='object' ||
-        d.tipus!=='EMP_USR_SET_ID'
-      ){
-        return;
-      }
-
-      guardarId(
-        d.idUsuari
-      );
-    }
-  );
-
-  if(document.readyState==='loading'){
-    document.addEventListener(
-      'DOMContentLoaded',
-      crearIframe
-    );
-  }else{
-    crearIframe();
-  }
-
-})();
-</script>
+  <iframe
+    id="emp-pro"
+    src="https://script.google.com/macros/s/AKfycbwfnxgfveMbk55-jIK45fKK18W0yU2aiNG18md1UStHsVPh_i8-Gh9twTsQyXxEQHn2/exec"
+    allow="fullscreen"
+    scrolling="yes">
+  </iframe>
 
 </body>
 </html>
