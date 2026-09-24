@@ -109,8 +109,12 @@
       var d=e.data||{};
 
       if(d.tipus==='EMP_USR_SET_ID' && idValid(d.idUsuari)){
+        /*
+         * V13: guardem l'ID però NO el reenviem immediatament.
+         * Durant registre -> favorits, l'eco provocava una segona
+         * validació concurrent que interferia amb carregarCataleg().
+         */
         guardarId(d.idUsuari);
-        enviarId();
         return;
       }
 
